@@ -1,0 +1,86 @@
+======================================================================
+ RUNNING UNIT TESTS (pytest -q tests/)
+======================================================================
+............                                                             [100%]
+12 passed in 6.38s
+[OK] All unit tests passed successfully!
+
+======================================================================
+ EXECUTING VQC TRAINING PIPELINE
+ Output Directory: artifacts
+ Arguments: --data synthetic_breath_data.csv --positive-label 1 --n-qubits 4 --n-layers 2 --epochs 40 --batch-size 32 --patience 8 --learning-rate 0.05 --n-runs 3 --robustness --noise-levels 0.02 0.05
+======================================================================
+Rows: 1000  target distribution: {'1': 510, '0': 490}
+Split sizes: train=700 val=150 test=150
+PCA keeps 47.3% of encoded-feature variance
+
+=== run 1/3 (seed 42) === Completed 15 epochs (early stopped at best val_loss=0.6415)
+=== run 2/3 (seed 43) === Completed 38 epochs (early stopped at best val_loss=0.6403)
+=== run 3/3 (seed 44) === Completed 17 epochs (early stopped at best val_loss=0.6420)
+
+Selected run seed=43  qubits=4 layers=2 params=24  threshold=0.380
+Runs: 3 ok, 0 failed;  val balanced acc mean +/- std = 0.687 +/- 0.004
+
+======================================================================
+                    PIPELINE EXECUTION RESULTS
+======================================================================
+
+[Data Summary]
+  Source:             synthetic_breath_data.csv
+  Positive Class:     1
+  Total Clean Rows:   1000
+  Target Counts:      {'1': 510, '0': 490}
+  Splits (Train/V/T): Train=700, Val=150, Test=150
+  PCA Variance Kept:  47.3%
+
+[Model Architecture & Hyperparameters]
+  Qubits:             4
+  Layers:             2
+  Trainable Params:   24
+  Entanglement:       ring
+  Re-uploading:       False
+  Optimizer:          adam (lr=0.05)
+  Batch Size:         32, Max Epochs: 40
+
+[Training & Run Selection]
+  Completed Runs:     3 ok, 0 failed
+  Val Bal-Acc (Runs): 0.6874 +/- 0.0035
+  Selected Seed:      43
+  Optimized Threshold:0.380
+
+[Selected Model Evaluation Metrics]
+  Split      | Acc     | Bal Acc  | Sens/Rec | Spec    | Macro F1 | ROC-AUC
+  ------------------------------------------------------------------------
+  Train      |  0.613  |   0.610  |   0.751  |  0.469  |   0.604  |  0.686
+  Validation |  0.687  |   0.683  |   0.818  |  0.548  |   0.679  |  0.698
+  Test (Final) |  0.580  |   0.578  |   0.724  |  0.432  |   0.570  |  0.625
+
+[Test Confusion Matrix (Rows: True 0/1, Cols: Predicted 0/1)]
+                Pred 0     Pred 1
+    Actual 0:   32         42        
+    Actual 1:   21         55        
+
+[Generalization Gap (Train - Validation)]
+  balanced_accuracy    Gap: -0.0730
+  roc_auc              Gap: -0.0123
+  macro_f1             Gap: -0.0755
+
+[Generated Output Files in artifacts]
+  - config.json                    (1.5 KB)
+  - confusion_matrix_test.png      (12.3 KB)
+  - loss_curves.png                (82.1 KB)
+  - metrics.json                   (22.4 KB)
+  - model                          (Directory)
+  - preprocessing                  (Directory)
+  - roc_test.png                   (31.9 KB)
+  - split_indices.json             (4.8 KB)
+
+======================================================================
+ LIVE PIPELINE INFERENCE DEMO
+======================================================================
+[OK] QuantumPipeline loaded successfully from: artifacts
+  Loaded Decision Threshold: 0.380
+
+Sample Test Inference:
+  Sample #1: Predicted Score = 0.5750 => Class = POSITIVE (1)
+  Sample #2: Predicted Score = 0.3507 => Class = NEGATIVE (0)

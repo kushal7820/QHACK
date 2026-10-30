@@ -1,0 +1,179 @@
+Ran inspect cancer_vocs_dataset.csv
+Analyzed README.md:L1-100
+Analyzed run_pipeline_and_audit.py:L1-60
+Ran copy cancer_vocs_dataset.csv into subprojects
+Ran run classical pipeline on cancer_vocs_dataset.csv · Exited with code 1
+Ran run classical pipeline on cancer_vocs_dataset.csv
+
+I have launched the classical machine learning pipeline on `cancer_vocs_dataset.csv`. I will proceed once it finishes.
+
+Checked task Run classical pipeline on cancer_vocs_dataset.csv
+
+Waiting for the classical training process to finish.
+
+Ran run quantum pipeline on cancer_vocs_dataset.csv
+
+I have launched the Quantum VQC pipeline on `cancer_vocs_dataset.csv`. I will report both the classical and quantum results once it completes.
+
+Checked task Run quantum pipeline on cancer_vocs_dataset.csv
+
+Waiting for the Quantum VQC training to complete.
+
+Both the **Classical Machine Learning** pipeline and the **Quantum Variational Quantum Classifier (VQC)** pipeline have been executed on [`cancer_vocs_dataset.csv`](file:///c:/Users/darsh/OneDrive/Desktop/Lokesh/textbook/3D%20model/IBMQuantum/cancer_vocs_dataset.csv). 
+
+Below are the outputs and evaluations presented separately for each pipeline.
+
+---
+
+## 1. Classical Machine Learning Pipeline Output
+**Script executed**: [`enose_classical/run_pipeline_and_audit.py`](file:///c:/Users/darsh/OneDrive/Desktop/Lokesh/textbook/3D%20model/IBMQuantum/enose_classical/run_pipeline_and_audit.py)  
+**Artifacts location**: [`enose_classical/artifacts/`](file:///c:/Users/darsh/OneDrive/Desktop/Lokesh/textbook/3D%20model/IBMQuantum/enose_classical/artifacts)
+
+### Terminal Execution Output:
+```text
+================================================================================
+      QUANTUM-ENHANCED E-NOSE: CLASSICAL BASELINE & AUDIT PIPELINE
+================================================================================
+Dataset path       : cancer_vocs_dataset.csv
+Output directory   : enose_classical\artifacts
+Selection metric   : balanced_accuracy
+Class weighting    : balanced
+--------------------------------------------------------------------------------
+
+[STEP 1] Raw Dataset Audit:
+  • Total samples: 1000 | Unique features: 10
+  • Target distribution: {'0': 500, '1': 500} (0: Non-Cancer, 1: Cancer)
+  • Duplicate rows found: 0
+  • Categorical variable 'Sex': {'0': 527, '1': 473}
+  • Categorical variable 'Smoking_Status': {'0': 504, '1': 282, '2': 214}
+
+[STEP 2] Split & Leakage-Free Pipeline Construction:
+  • Train split : 600 samples (60%)
+  • Val split   : 200 samples (20%)
+  • Test split  : 200 samples (20%)
+  • Preprocessor fitted on TRAIN only. Transformed columns: 13
+  • Feature list: ['Age', 'Acetone', 'Isoprene', 'Ethanol', 'Formaldehyde', 'Benzene', 
+                   'Toluene', 'Methane', 'Sex_0', 'Sex_1', 'Smoking_Status_0', 
+                   'Smoking_Status_1', 'Smoking_Status_2']
+
+[STEP 3] Model Training & Hyperparameter Tuning:
+  • logistic_regression : Best params = {'clf__C': 0.01} (Val balanced_accuracy: 1.0000)
+  • svm_rbf             : Best params = {'clf__C': 0.1, 'clf__gamma': 'scale'} (Val balanced_accuracy: 1.0000)
+  • random_forest       : Best params = {'clf__max_depth': None, 'clf__min_samples_leaf': 1} (Val balanced_accuracy: 1.0000)
+
+[STEP 4] Evaluation on Held-Out Test Split (200 samples):
+===============================================================================================
+                              HELD-OUT TEST SET PERFORMANCE
+===============================================================================================
+         model_name  accuracy  balanced_accuracy  precision  sensitivity  specificity  macro_f1  roc_auc  train_time (s)
+              dummy       0.5                0.5        0.0          0.0          1.0    0.3333      0.5      0.0294
+logistic_regression       1.0                1.0        1.0          1.0          1.0    1.0000      1.0      0.0321
+            svm_rbf       1.0                1.0        1.0          1.0          1.0    1.0000      1.0      0.0329
+      random_forest       1.0                1.0        1.0          1.0          1.0    1.0000      1.0      0.6149
+===============================================================================================
+
+[STEP 5] Test Split Confusion Matrices:
+  • dummy               : TN=100 | FP=  0 | FN=100 | TP=  0
+  • logistic_regression : TN=100 | FP=  0 | FN=  0 | TP=100
+  • svm_rbf             : TN=100 | FP=  0 | FN=  0 | TP=100
+  • random_forest       : TN=100 | FP=  0 | FN=  0 | TP=100
+
+[STEP 6] Pipeline Verification & Single-Sample Inference Test:
+  • Sample patient input: Age=62, Smoking=2, High Acetone & Benzene
+  • Loaded model (random_forest) Prediction: Control (0) (Confidence: 96.0% Healthy)
+```
+
+---
+
+## 2. Quantum Variational Quantum Classifier (VQC) Pipeline Output
+**Script executed**: [`quantum_vqc/run_pipeline.py`](file:///c:/Users/darsh/OneDrive/Desktop/Lokesh/textbook/3D%20model/IBMQuantum/quantum_vqc/run_pipeline.py)  
+**Artifacts location**: [`quantum_vqc/artifacts/`](file:///c:/Users/darsh/OneDrive/Desktop/Lokesh/textbook/3D%20model/IBMQuantum/quantum_vqc/artifacts)
+
+### Terminal Execution Output:
+```text
+======================================================================
+ EXECUTING VQC TRAINING PIPELINE
+ Output Directory: quantum_vqc\artifacts
+ Arguments: --data cancer_vocs_dataset.csv --positive-label 1 --n-qubits 4 --n-layers 2 --epochs 40 --batch-size 32 --patience 8 --learning-rate 0.05 --n-runs 3 --robustness
+======================================================================
+Rows: 1000  target distribution: {'0': 500, '1': 500}
+Split sizes: train=700 val=150 test=150
+PCA keeps 85.4% of encoded-feature variance
+
+=== run 1/3 (seed 42) === Converged at epoch 16 (best val_loss=0.1193, val_acc=1.000)
+=== run 2/3 (seed 43) === Converged at epoch 13 (best val_loss=0.1193, val_acc=1.000)
+=== run 3/3 (seed 44) === Converged at epoch 19 (best val_loss=0.1193, val_acc=1.000)
+
+Selected run seed=44  qubits=4 layers=2 params=24  threshold=0.500
+Runs: 3 ok, 0 failed;  val balanced acc mean +/- std = 1.000 +/- 0.000
+
+======================================================================
+                    PIPELINE EXECUTION RESULTS
+======================================================================
+
+[Data Summary]
+  Source:             cancer_vocs_dataset.csv
+  Positive Class:     1
+  Total Clean Rows:   1000
+  Target Counts:      {'0': 500, '1': 500}
+  Splits (Train/V/T): Train=700, Val=150, Test=150
+  PCA Variance Kept:  85.4% (reduced from 13 encoded features to 4 qubits)
+
+[Model Architecture & Hyperparameters]
+  Qubits:             4
+  Layers:             2
+  Trainable Params:   24
+  Entanglement:       ring (CNOT ring)
+  Re-uploading:       False
+  Optimizer:          adam (lr=0.05)
+  Batch Size:         32, Max Epochs: 40
+
+[Training & Run Selection]
+  Completed Runs:     3 ok, 0 failed
+  Val Bal-Acc (Runs): 1.0000 +/- 0.0000
+  Selected Seed:      44
+  Optimized Threshold:0.500
+
+[Selected Model Evaluation Metrics]
+  Split        | Acc     | Bal Acc  | Sens/Rec | Spec    | Macro F1 | ROC-AUC
+  ------------------------------------------------------------------------
+  Train        |  0.997  |   0.997  |   0.994  |  1.000  |   0.997  |  1.000
+  Validation   |  1.000  |   1.000  |   1.000  |  1.000  |   1.000  |  1.000
+  Test (Final) |  1.000  |   1.000  |   1.000  |  1.000  |   1.000  |  1.000
+
+[Test Confusion Matrix (Rows: True 0/1, Cols: Predicted 0/1)]
+                Pred 0     Pred 1
+    Actual 0:   75         0         
+    Actual 1:   0          75        
+
+[Generalization Gap (Train - Validation)]
+  balanced_accuracy    Gap: -0.0029
+  roc_auc              Gap: -0.0000
+  macro_f1             Gap: -0.0029
+
+[Generated Output Files in artifacts]
+  - config.json                    (1.5 KB)
+  - confusion_matrix_test.png      (11.9 KB)
+  - loss_curves.png                (48.0 KB)
+  - metrics.json                   (18.7 KB)
+  - model/                         (vqc_params.npz & config)
+  - preprocessing/                 (preprocessor.joblib & config)
+  - roc_test.png                   (29.7 KB)
+  - split_indices.json             (4.8 KB)
+
+======================================================================
+ LIVE PIPELINE INFERENCE DEMO
+======================================================================
+[OK] QuantumPipeline loaded successfully from: quantum_vqc\artifacts
+  Loaded Decision Threshold: 0.500
+
+Sample Test Inference:
+  Sample #1: Predicted Score = 0.2927 => Class = NEGATIVE (0)
+  Sample #2: Predicted Score = 0.0234 => Class = NEGATIVE (0)
+```
+
+---
+
+### Comparative Takeaways
+1. **Separability**: On [`cancer_vocs_dataset.csv`](file:///c:/Users/darsh/OneDrive/Desktop/Lokesh/textbook/3D%20model/IBMQuantum/cancer_vocs_dataset.csv), both the classical models (Logistic Regression, SVM-RBF, Random Forest) and the 4-qubit Quantum VQC achieve **100% accuracy and 1.00 ROC-AUC** on their held-out test splits.
+2. **Dimension Reduction**: The Quantum VQC compressed the 13 encoded feature dimensions into **4 PCA rotation angles (qubits)** while retaining **85.4%** of the variance, maintaining zero false positives and zero false negatives on the test set.

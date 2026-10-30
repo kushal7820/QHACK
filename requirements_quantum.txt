@@ -1,0 +1,9 @@
+# Versions below were the ones the code and tests were actually run with
+# (Python 3.12). Newer PennyLane/NumPy releases may work but are untested.
+pennylane==0.45.1
+numpy==2.4.4
+pandas==3.0.2
+scikit-learn==1.8.0
+matplotlib==3.10.8
+# optional, for running the tests:
+# pytest==9.2.0
